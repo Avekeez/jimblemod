@@ -3,12 +3,15 @@ package jimbleman.jimblemod.item.Armor;
 import jimbleman.jimblemod.JimbleMod;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
+import net.minecraftforge.fml.client.FMLClientHandler;
 
 public class ArmorLithuanianLongjohns extends ArmorBase implements ISpecialArmor {
 
@@ -36,6 +39,39 @@ public class ArmorLithuanianLongjohns extends ArmorBase implements ISpecialArmor
 
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack) {
-        player.motionY = 0.3d;
+
+        if (FMLClientHandler.instance().getClient().gameSettings.keyBindJump.isKeyDown()) {
+            player.motionY = Math.min(player.motionY + 0.4d, 1);
+        }
+
+        float forward, strafe;
+        forward = strafe = 0;
+
+        Vec3d vec = player.getLookVec().scale(5);
+
+        double x = vec.x;
+        double y = vec.y;
+        double z = vec.z;
+
+
+        if (FMLClientHandler.instance().getClient().gameSettings.keyBindForward.isKeyDown() && (!player.onGround || player.getLookVec().y > 0)) {
+            player.motionX = x;
+            player.motionY = y;
+            player.motionZ = z;
+            player.setNoGravity(true);
+        } else {
+            player.setNoGravity(false);
+        }
+        if (FMLClientHandler.instance().getClient().gameSettings.keyBindBack.isKeyDown()) {
+            forward = -5;
+        }
+        if (FMLClientHandler.instance().getClient().gameSettings.keyBindLeft.isKeyDown()) {
+            strafe = 5;
+        }
+        if (FMLClientHandler.instance().getClient().gameSettings.keyBindRight.isKeyDown()) {
+            strafe = -5;
+        }
+
+        player.moveRelative(strafe, 0, forward, 0.1f);
     }
 }
