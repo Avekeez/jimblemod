@@ -1,11 +1,15 @@
 package jimbleman.jimblemod;
 
-import jimbleman.jimblemod.block.ModBlocks;
-import jimbleman.jimblemod.item.ModItems;
 import jimbleman.jimblemod.proxy.CommonProxy;
+import jimbleman.jimblemod.registry.*;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemElytra;
 import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -19,9 +23,10 @@ public class JimbleMod {
     public static final String modId = "jimblemod";
     public static final String name = "Jimblemod";
     public static final String version = "1.0.0";
-
     @SidedProxy(serverSide = "jimbleman.jimblemod.proxy.CommonProxy", clientSide = "jimbleman.jimblemod.proxy.ClientProxy")
     public static CommonProxy proxy;
+
+    public static final ItemArmor.ArmorMaterial longjohnArmorMaterial = EnumHelper.addArmorMaterial("LONGJOHNS",modId+":longjohns", 7, new int[]{0, 5, 0, 0}, 30, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0);
 
     @Mod.EventBusSubscriber
     public static class RegistrationHandler {
