@@ -14,12 +14,15 @@ public class ModItems {
 
     public static ArmorLithuanianLongjohns lithuanianLongjohns = new ArmorLithuanianLongjohns();
 
+    public static ItemRideinator rideinator = new ItemRideinator().setCreativeTab(CreativeTabs.TOOLS);
+
     public static void register(IForgeRegistry<Item> registry) {
         registry.registerAll(
                 ingotLithuanium,
                 rawLithuanii,
                 lithuaniiSeed,
-                lithuanianLongjohns
+                lithuanianLongjohns,
+                rideinator
         );
     }
 
@@ -28,5 +31,6 @@ public class ModItems {
         rawLithuanii.registerItemModel();
         lithuanianLongjohns.registerItemModel();
         lithuaniiSeed.registerItemModel(lithuaniiSeed);
+        rideinator.registerItemModel();
     }
 }

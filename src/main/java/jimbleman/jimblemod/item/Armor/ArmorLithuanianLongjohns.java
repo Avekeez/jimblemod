@@ -1,9 +1,9 @@
 package jimbleman.jimblemod.item.Armor;
 
 import jimbleman.jimblemod.JimbleMod;
+import jimbleman.jimblemod.Key;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -12,6 +12,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.fml.client.FMLClientHandler;
+
+import static jimbleman.jimblemod.KeyHandler.*;
 
 public class ArmorLithuanianLongjohns extends ArmorBase implements ISpecialArmor {
 
@@ -39,39 +41,56 @@ public class ArmorLithuanianLongjohns extends ArmorBase implements ISpecialArmor
 
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack) {
+        float forward, strafe, up;
+        forward = strafe = up = 0;
 
-        if (FMLClientHandler.instance().getClient().gameSettings.keyBindJump.isKeyDown()) {
-            player.motionY = Math.min(player.motionY + 0.4d, 1);
+        player.setNoGravity(false);
+
+        if (!player.onGround) {
+
+            //player.setNoGravity(!isAnyKeyDown(new Key[] {Key.Forward, Key.Back, Key.Left, Key.Right, Key.Jump, Key.Sneak}));
+
+
+            Vec3d finalVec = Vec3d.ZERO;
+
+            Vec3d forwardVec = player.getLookVec();
+            Vec3d rightVec = forwardVec.crossProduct(new Vec3d(0, 1, 0));
+            Vec3d upVec = forwardVec.crossProduct(rightVec);
+
+            if (isKeyDown(Key.Forward)) {
+                finalVec = finalVec.add(forwardVec.scale(5));
+            }
+            if (isKeyDown(Key.Back)) {
+                finalVec = finalVec.add(forwardVec.scale(-5));
+            }
+
+            if (isKeyDown(Key.Right)) {
+                finalVec = finalVec.add(rightVec.scale(5));
+            }
+            if (isKeyDown(Key.Left)) {
+                finalVec = finalVec.add(rightVec.scale(-5));
+            }
+
+            if (isKeyDown(Key.Jump)) {
+                finalVec = finalVec.add(upVec.scale(-5));
+            }
+            if (isKeyDown(Key.Sneak)) {
+                finalVec = finalVec.add(upVec.scale(5));
+            }
+
+            if (isAnyKeyDown(new Key[] {
+                    Key.Forward,
+                    Key.Back,
+                    Key.Left,
+                    Key.Right,
+                    Key.Jump,
+                    Key.Sneak})) {
+                player.motionX = Math.min(player.motionX+0.4d, finalVec.x);
+                player.motionY = Math.min(player.motionY+0.4d, finalVec.y);
+                player.motionZ = Math.min(player.motionZ+0.4d, finalVec.z);
+            }
+            System.out.println(finalVec.toString());
+
         }
-
-        float forward, strafe;
-        forward = strafe = 0;
-
-        Vec3d vec = player.getLookVec().scale(5);
-
-        double x = vec.x;
-        double y = vec.y;
-        double z = vec.z;
-
-
-        if (FMLClientHandler.instance().getClient().gameSettings.keyBindForward.isKeyDown() && (!player.onGround || player.getLookVec().y > 0)) {
-            player.motionX = x;
-            player.motionY = y;
-            player.motionZ = z;
-            player.setNoGravity(true);
-        } else {
-            player.setNoGravity(false);
-        }
-        if (FMLClientHandler.instance().getClient().gameSettings.keyBindBack.isKeyDown()) {
-            forward = -5;
-        }
-        if (FMLClientHandler.instance().getClient().gameSettings.keyBindLeft.isKeyDown()) {
-            strafe = 5;
-        }
-        if (FMLClientHandler.instance().getClient().gameSettings.keyBindRight.isKeyDown()) {
-            strafe = -5;
-        }
-
-        player.moveRelative(strafe, 0, forward, 0.1f);
     }
 }
